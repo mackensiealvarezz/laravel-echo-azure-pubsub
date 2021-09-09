@@ -1,4 +1,3 @@
-import WebSocket from 'ws';
 import { Channel as Channel$1 } from 'laravel-echo/dist/channel';
 import { EventFormatter as EventFormatter$1 } from 'laravel-echo/dist/util';
 

@@ -1,5 +1,4 @@
 import Connector from 'laravel-echo';
-import WebSocket from 'ws';
 import { AzureChannel } from './channel/azure-channel';
 export declare class AzureConnector extends Connector {
     /**

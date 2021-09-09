@@ -1,5 +1,4 @@
 import Connector from 'laravel-echo';
-import WebSocket from 'ws';
 const { WebPubSubServiceClient } = require('@azure/web-pubsub');
 import { AzureChannel } from './channel/azure-channel';
 

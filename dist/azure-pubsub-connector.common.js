@@ -2,13 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var WebSocket = require('ws');
 var channel = require('laravel-echo/dist/channel');
 var util = require('laravel-echo/dist/util');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var WebSocket__default = /*#__PURE__*/_interopDefaultLegacy(WebSocket);
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -1707,7 +1702,7 @@ class AzureConnector extends Echo {
         const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
         const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
         const token = serviceClient.getAuthenticationToken();
-        this.socket = new WebSocket__default['default'](token.url);
+        this.socket = new WebSocket(token.url);
         this.extendSocket();
         return this.socket;
     }
