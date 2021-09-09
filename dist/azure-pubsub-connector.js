@@ -1620,7 +1620,6 @@ class EventFormatter {
     }
 }
 
-// import { EventFormatter } from 'laravel-echo/dist/util/event-formatter';
 /**
  * This class represents a Ratchet channel.
  */
@@ -1728,8 +1727,7 @@ class AzureChannel extends Channel {
     }
 }
 
-// export class AzureConnector{
-// }
+const { WebPubSubServiceClient } = require('@azure/web-pubsub');
 class AzureConnector extends Echo {
     constructor() {
         /**
@@ -1747,12 +1745,12 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
-        // const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
-        // const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
-        // const token = serviceClient.getAuthenticationToken();
-        this.socket = new WebSocket('');
+        const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
+        const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
+        const token = serviceClient.getAuthenticationToken();
+        console.log(token.url);
+        this.socket = new WebSocket(token.url);
         this.extendSocket();
-        console.log('conntent');
         return this.socket;
     }
     /**

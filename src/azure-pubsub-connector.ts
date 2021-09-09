@@ -24,8 +24,7 @@ export class AzureConnector extends Connector {
     const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
     const token = serviceClient.getAuthenticationToken();
     console.log(token.url);
-    this.socket = new WebSocket('');
-
+    this.socket = new WebSocket(token.url);
     this.extendSocket();
     return this.socket;
   }
