@@ -6,7 +6,6 @@ export default {
         { file: './dist/azure-pubsub-connector.js', format: 'esm' },
         { file: './dist/azure-pubsub-connector.common.js', format: 'cjs' },
     ],
-    external: ['laravel-echo/dist/channel', 'laravel-echo/dist/util'],
     plugins: [
         typescript(),
         nodeResolve(),

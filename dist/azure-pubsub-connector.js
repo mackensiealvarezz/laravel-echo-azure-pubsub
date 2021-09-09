@@ -1727,7 +1727,6 @@ class AzureChannel extends Channel {
     }
 }
 
-require('@azure/web-pubsub');
 class AzureConnector extends Echo {
     constructor() {
         /**
@@ -1745,9 +1744,6 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
-        // const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
-        // const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
-        // const token = serviceClient.getAuthenticationToken();
         console.log('testing');
         this.socket = new WebSocket('wss://asd');
         this.extendSocket();
