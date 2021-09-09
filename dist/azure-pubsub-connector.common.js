@@ -2,9 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var channel = require('laravel-echo/dist/channel');
-var util = require('laravel-echo/dist/util');
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -191,7 +188,7 @@ var Connector = /*#__PURE__*/function () {
 /**
  * This class represents a basic channel.
  */
-var Channel = /*#__PURE__*/function () {
+var Channel$1 = /*#__PURE__*/function () {
   function Channel() {
     _classCallCheck(this, Channel);
   }
@@ -231,7 +228,7 @@ var Channel = /*#__PURE__*/function () {
 /**
  * Event name formatter
  */
-var EventFormatter = /*#__PURE__*/function () {
+var EventFormatter$1 = /*#__PURE__*/function () {
   /**
    * Create a new class instance.
    */
@@ -291,7 +288,7 @@ var PusherChannel = /*#__PURE__*/function (_Channel) {
     _this.name = name;
     _this.pusher = pusher;
     _this.options = options;
-    _this.eventFormatter = new EventFormatter(_this.options.namespace);
+    _this.eventFormatter = new EventFormatter$1(_this.options.namespace);
 
     _this.subscribe();
 
@@ -414,7 +411,7 @@ var PusherChannel = /*#__PURE__*/function (_Channel) {
   }]);
 
   return PusherChannel;
-}(Channel);
+}(Channel$1);
 
 /**
  * This class represents a Pusher private channel.
@@ -575,7 +572,7 @@ var SocketIoChannel = /*#__PURE__*/function (_Channel) {
     _this.name = name;
     _this.socket = socket;
     _this.options = options;
-    _this.eventFormatter = new EventFormatter(_this.options.namespace);
+    _this.eventFormatter = new EventFormatter$1(_this.options.namespace);
 
     _this.subscribe();
 
@@ -714,7 +711,7 @@ var SocketIoChannel = /*#__PURE__*/function (_Channel) {
   }]);
 
   return SocketIoChannel;
-}(Channel);
+}(Channel$1);
 
 /**
  * This class represents a Socket.io private channel.
@@ -887,7 +884,7 @@ var NullChannel = /*#__PURE__*/function (_Channel) {
   }]);
 
   return NullChannel;
-}(Channel);
+}(Channel$1);
 
 /**
  * This class represents a null private channel.
@@ -1573,11 +1570,65 @@ var Echo = /*#__PURE__*/function () {
   return Echo;
 }();
 
+/**
+ * This class represents a basic channel.
+ */
+class Channel {
+    /**
+     * Listen for a whisper event on the channel instance.
+     */
+    listenForWhisper(event, callback) {
+        return this.listen('.client-' + event, callback);
+    }
+    /**
+     * Listen for an event on the channel instance.
+     */
+    notification(callback) {
+        return this.listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', callback);
+    }
+    /**
+     * Stop listening for a whisper event on the channel instance.
+     */
+    stopListeningForWhisper(event, callback) {
+        return this.stopListening('.client-' + event, callback);
+    }
+}
+
+/**
+ * Event name formatter
+ */
+class EventFormatter {
+    /**
+     * Create a new class instance.
+     */
+    constructor(namespace) {
+        this.setNamespace(namespace);
+    }
+    /**
+     * Format the given event name.
+     */
+    format(event) {
+        if (event.charAt(0) === '.' || event.charAt(0) === '\\') {
+            return event.substr(1);
+        }
+        else if (this.namespace) {
+            event = this.namespace + '.' + event;
+        }
+        return event.replace(/\./g, '\\');
+    }
+    /**
+     * Set the event namespace.
+     */
+    setNamespace(value) {
+        this.namespace = value;
+    }
+}
+
 // import { EventFormatter } from 'laravel-echo/dist/util/event-formatter';
 /**
  * This class represents a Ratchet channel.
  */
-class AzureChannel extends channel.Channel {
+class AzureChannel extends Channel {
     /**
      * Create a new class instance.
      */
@@ -1594,7 +1645,7 @@ class AzureChannel extends channel.Channel {
         this.name = name;
         this.socket = socket;
         this.options = options;
-        this.eventFormatter = new util.EventFormatter(this.options.namespace);
+        this.eventFormatter = new EventFormatter(this.options.namespace);
         this.subscribe();
     }
     listen(event, callback) {
@@ -1705,6 +1756,7 @@ class AzureConnector extends Echo {
         // const token = serviceClient.getAuthenticationToken();
         this.socket = new WebSocket('');
         this.extendSocket();
+        console.log('conntent');
         return this.socket;
     }
     /**
