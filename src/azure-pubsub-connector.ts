@@ -21,10 +21,19 @@ export class AzureConnector extends Connector {
   connect(): WebSocket {
 
     console.log('testing');
+    let data = this.fetchToken();
+    console.log(data);
     this.socket = new WebSocket('wss://asd');
     this.extendSocket();
     return this.socket;
   }
+
+  async fetchToken(){
+    let res = await fetch(`/negotiate}`);
+    return await res.json();
+  }
+
+
 
   /**
    * Attach event handlers to the socket.
