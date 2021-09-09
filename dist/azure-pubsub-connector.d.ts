@@ -67,3 +67,4 @@ export declare class AzureConnector extends Connector {
      */
     generateId(): string;
 }
+//# sourceMappingURL=azure-pubsub-connector.d.ts.map

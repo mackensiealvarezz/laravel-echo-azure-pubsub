@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Custom Laravel Echo Connector to use Azure Pubsub",
   "main": "dist/azure-pubsub-connector.js",
+  "types": "dist",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
