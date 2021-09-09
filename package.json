@@ -2,7 +2,7 @@
   "name": "laravel-echo-azure-pubsub",
   "version": "1.0.0",
   "description": "Custom Laravel Echo Connector to use Azure Pubsub",
-  "main": "azure-pubsub-connector.js",
+  "main": "src/azure-pubsub-connector.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -11,7 +11,7 @@ export class AzureConnector extends Connector {
      * Create a fresh connection.
      */
     connect() {
-
+        console.log(this.options);
     }
 
     /**
