@@ -69,13 +69,13 @@ var AzureConnector = /** @class */ (function (_super) {
         // });
     };
     /**
-      * Listen for an event on a channel instance.
-      *
-      * @param  {string} name
-      * @param  {string} event
-      * @param  {Function} callback
-      * @return {AzureChannel}
-      */
+     * Listen for an event on a channel instance.
+     *
+     * @param  {string} name
+     * @param  {string} event
+     * @param  {Function} callback
+     * @return {AzureChannel}
+     */
     AzureConnector.prototype.listen = function (name, event, callback) {
         return this.channel(name).listen(event, callback);
     };

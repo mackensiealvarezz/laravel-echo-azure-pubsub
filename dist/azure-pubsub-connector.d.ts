@@ -23,13 +23,13 @@ export declare class AzureConnector extends Connector {
      */
     extendSocket(): void;
     /**
-      * Listen for an event on a channel instance.
-      *
-      * @param  {string} name
-      * @param  {string} event
-      * @param  {Function} callback
-      * @return {AzureChannel}
-      */
+     * Listen for an event on a channel instance.
+     *
+     * @param  {string} name
+     * @param  {string} event
+     * @param  {Function} callback
+     * @return {AzureChannel}
+     */
     listen(name: string, event: string, callback: Function): AzureChannel;
     /**
      * Get a channel instance by name.
