@@ -1,10 +1,6 @@
 import Connector from 'laravel-echo';
-// const { WebPubSubServiceClient } = require('@azure/web-pubsub');
+const { WebPubSubServiceClient } = require('@azure/web-pubsub');
 import { AzureChannel } from './channel/azure-channel';
-
-// export class AzureConnector{
-
-// }
 
 export class AzureConnector extends Connector {
   /**
