@@ -1,5 +1,6 @@
 import Connector from 'laravel-echo';
-
+const WebSocket = require('ws');
+const { WebPubSubServiceClient } = require('@azure/web-pubsub');
 export class AzureConnector extends Connector {
 
     /**
@@ -11,7 +12,10 @@ export class AzureConnector extends Connector {
      * Create a fresh connection.
      */
     connect() {
-        console.log(this.options);
+        let connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`
+        let serviceClient = new WebPubSubServiceClient(connectionString, "Hub");
+        let token = serviceClient.getAuthenticationToken();
+        return new WebSocket(token.url);
     }
 
     /**
