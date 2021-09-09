@@ -1731,7 +1731,6 @@ class AzureChannel extends Channel {
     }
 }
 
-const { WebPubSubServiceClient } = require('@azure/web-pubsub');
 class AzureConnector extends Echo {
     constructor() {
         /**
@@ -1749,11 +1748,11 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
-        const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
-        const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
-        const token = serviceClient.getAuthenticationToken();
-        console.log(token.url);
-        this.socket = new WebSocket(token.url);
+        // const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
+        // const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
+        // const token = serviceClient.getAuthenticationToken();
+        console.log('testing');
+        this.socket = new WebSocket('wss://asd');
         this.extendSocket();
         return this.socket;
     }
