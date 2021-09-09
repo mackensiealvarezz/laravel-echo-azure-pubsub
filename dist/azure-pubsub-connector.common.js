@@ -1731,6 +1731,7 @@ class AzureChannel extends Channel {
     }
 }
 
+require('@azure/web-pubsub');
 class AzureConnector extends Echo {
     constructor() {
         /**
