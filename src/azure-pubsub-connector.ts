@@ -29,7 +29,7 @@ export class AzureConnector extends Connector {
   }
 
   async fetchToken(){
-    let res = await fetch(`/negotiate}`);
+    let res = await fetch(`/negotiate`);
     return await res.json();
   }
 
