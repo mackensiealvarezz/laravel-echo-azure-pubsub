@@ -22,15 +22,16 @@ export class AzureConnector extends Connector {
 
     console.log('testing');
     let data = this.fetchToken();
-    console.log(data);
+
     this.socket = new WebSocket(data['url']);
     this.extendSocket();
     return this.socket;
   }
 
-  async fetchToken(){
-    let res = await fetch(`/negotiate`);
-    return await res.json();
+   fetchToken(){
+       return fetch(`/negotiate`)
+       .then((response) => {return response.json()})
+       .then((json) => { return json});
   }
 
   /**
