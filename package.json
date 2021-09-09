@@ -1,0 +1,29 @@
+{
+  "name": "laravel-echo-azure-pubsub",
+  "version": "1.0.0",
+  "description": "Custom Laravel Echo Connector to use Azure Pubsub",
+  "main": "azure-pubsub-connector.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mackensiealvarezz/laravel-echo-azure-pubsub.git"
+  },
+  "keywords": [
+    "laravel",
+    "echo",
+    "azure",
+    "pubsub",
+    "websockets"
+  ],
+  "author": "Mackensie Alvarez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mackensiealvarezz/laravel-echo-azure-pubsub/issues"
+  },
+  "homepage": "https://github.com/mackensiealvarezz/laravel-echo-azure-pubsub#readme",
+  "devDependencies": {
+    "laravel-echo": "^1.11.2"
+  }
+}
