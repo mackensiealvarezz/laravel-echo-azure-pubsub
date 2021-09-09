@@ -1,5 +1,5 @@
-import { EventFormatter } from 'laravel-echo/dist/util/event-formatter';
-import { Channel } from 'laravel-echo/dist/channel/channel';
+import { Channel } from "laravel-echo/dist/channel";
+import { EventFormatter } from "laravel-echo/dist/util";
 /**
  * This class represents a Ratchet channel.
  */

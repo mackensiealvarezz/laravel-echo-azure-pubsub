@@ -1,8 +1,9 @@
 import Connector from 'laravel-echo';
 import WebSocket from 'ws';
-import { EventFormatter } from 'laravel-echo/dist/util/event-formatter';
-import { Channel } from 'laravel-echo/dist/channel/channel';
+import { Channel } from 'laravel-echo/dist/channel';
+import { EventFormatter } from 'laravel-echo/dist/util';
 
+// import { EventFormatter } from 'laravel-echo/dist/util/event-formatter';
 /**
  * This class represents a Ratchet channel.
  */
@@ -157,13 +158,13 @@ class AzureConnector extends Connector {
         // });
     }
     /**
-     * Listen for an event on a channel instance.
-     *
-     * @param  {string} name
-     * @param  {string} event
-     * @param  {Function} callback
-     * @return {AzureChannel}
-     */
+      * Listen for an event on a channel instance.
+      *
+      * @param  {string} name
+      * @param  {string} event
+      * @param  {Function} callback
+      * @return {AzureChannel}
+      */
     listen(name, event, callback) {
         return this.channel(name).listen(event, callback);
     }

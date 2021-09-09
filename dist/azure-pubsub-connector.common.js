@@ -4,14 +4,15 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var Connector = require('laravel-echo');
 var WebSocket = require('ws');
-var eventFormatter = require('laravel-echo/dist/util/event-formatter');
-var channel = require('laravel-echo/dist/channel/channel');
+var channel = require('laravel-echo/dist/channel');
+var util = require('laravel-echo/dist/util');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var Connector__default = /*#__PURE__*/_interopDefaultLegacy(Connector);
 var WebSocket__default = /*#__PURE__*/_interopDefaultLegacy(WebSocket);
 
+// import { EventFormatter } from 'laravel-echo/dist/util/event-formatter';
 /**
  * This class represents a Ratchet channel.
  */
@@ -32,7 +33,7 @@ class AzureChannel extends channel.Channel {
         this.name = name;
         this.socket = socket;
         this.options = options;
-        this.eventFormatter = new eventFormatter.EventFormatter(this.options.namespace);
+        this.eventFormatter = new util.EventFormatter(this.options.namespace);
         this.subscribe();
     }
     listen(event, callback) {
@@ -166,13 +167,13 @@ class AzureConnector extends Connector__default['default'] {
         // });
     }
     /**
-     * Listen for an event on a channel instance.
-     *
-     * @param  {string} name
-     * @param  {string} event
-     * @param  {Function} callback
-     * @return {AzureChannel}
-     */
+      * Listen for an event on a channel instance.
+      *
+      * @param  {string} name
+      * @param  {string} event
+      * @param  {Function} callback
+      * @return {AzureChannel}
+      */
     listen(name, event, callback) {
         return this.channel(name).listen(event, callback);
     }

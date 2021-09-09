@@ -57,15 +57,15 @@ export class AzureConnector extends Connector {
     // });
   }
 
-  /**
-   * Listen for an event on a channel instance.
-   *
-   * @param  {string} name
-   * @param  {string} event
-   * @param  {Function} callback
-   * @return {AzureChannel}
-   */
-  listen(name: string, event: string, callback: Function): AzureChannel {
+   /**
+     * Listen for an event on a channel instance.
+     *
+     * @param  {string} name
+     * @param  {string} event
+     * @param  {Function} callback
+     * @return {AzureChannel}
+     */
+   listen(name: string, event: string, callback: Function): AzureChannel {
     return this.channel(name).listen(event, callback);
   }
 
@@ -74,7 +74,7 @@ export class AzureConnector extends Connector {
    */
   channel(channel: string): AzureChannel {
     if (!this.channels[channel]) {
-      this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
+        this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
     }
 
     return this.channels[channel];
@@ -104,7 +104,7 @@ export class AzureConnector extends Connector {
   /**
    * Leave the given channel.
    */
-  leaveChannel(name: any) {
+  leaveChannel(name:any ) {
     console.log('leaveChannel');
   }
 
