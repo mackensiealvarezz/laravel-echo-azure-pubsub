@@ -2,19 +2,6 @@
   "name": "laravel-echo-azure-pubsub",
   "version": "1.0.0",
   "description": "Custom Laravel Echo Connector to use Azure Pubsub",
-  "main": "dist/azure-pubsub-connector.js",
-  "types": "dist",
-  "scripts": {
-    "build": "tsc --build",
-    "clean": "tsc --build --clean",
-    "format": "prettier --write \"src/**/*.ts\" ",
-    "lint": "tslint -p tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mackensiealvarezz/laravel-echo-azure-pubsub.git"
-  },
   "keywords": [
     "laravel",
     "echo",
@@ -28,10 +15,26 @@
     "url": "https://github.com/mackensiealvarezz/laravel-echo-azure-pubsub/issues"
   },
   "homepage": "https://github.com/mackensiealvarezz/laravel-echo-azure-pubsub#readme",
+  "main": "dist/azure-pubsub-connector.common.js",
+  "module": "dist/azure-pubsub-connector.js",
+  "types": "dist/azure-pubsub-connector.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "clean": "tsc --build --clean",
+    "format": "prettier --write \"src/**/*.ts\" ",
+    "lint": "tslint -p tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mackensiealvarezz/laravel-echo-azure-pubsub.git"
+  },
   "devDependencies": {
     "@types/node": "^16.9.0",
     "laravel-echo": "^1.11.2",
     "prettier": "^2.3.2",
+    "rollup": "^2.56.3",
+    "rollup-plugin-typescript2": "^0.30.0",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.4.2"

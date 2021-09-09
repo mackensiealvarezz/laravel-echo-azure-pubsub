@@ -63,4 +63,3 @@ export declare class AzureChannel extends Channel {
      */
     protected unbindEvent(event: string, callback?: Function): void;
 }
-//# sourceMappingURL=azure-channel.d.ts.map

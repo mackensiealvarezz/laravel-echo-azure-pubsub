@@ -1,12 +1,21 @@
-import Connector from 'laravel-echo';
-import WebSocket from 'ws';
-import { EventFormatter } from 'laravel-echo/dist/util/event-formatter';
-import { Channel } from 'laravel-echo/dist/channel/channel';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+var Connector = require('laravel-echo');
+var WebSocket = require('ws');
+var eventFormatter = require('laravel-echo/dist/util/event-formatter');
+var channel = require('laravel-echo/dist/channel/channel');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var Connector__default = /*#__PURE__*/_interopDefaultLegacy(Connector);
+var WebSocket__default = /*#__PURE__*/_interopDefaultLegacy(WebSocket);
 
 /**
  * This class represents a Ratchet channel.
  */
-class AzureChannel extends Channel {
+class AzureChannel extends channel.Channel {
     /**
      * Create a new class instance.
      */
@@ -23,7 +32,7 @@ class AzureChannel extends Channel {
         this.name = name;
         this.socket = socket;
         this.options = options;
-        this.eventFormatter = new EventFormatter(this.options.namespace);
+        this.eventFormatter = new eventFormatter.EventFormatter(this.options.namespace);
         this.subscribe();
     }
     listen(event, callback) {
@@ -111,7 +120,7 @@ class AzureChannel extends Channel {
 }
 
 const { WebPubSubServiceClient } = require('@azure/web-pubsub');
-class AzureConnector extends Connector {
+class AzureConnector extends Connector__default['default'] {
     constructor() {
         /**
          * The WebSocket connection instance.
@@ -131,7 +140,7 @@ class AzureConnector extends Connector {
         const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
         const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
         const token = serviceClient.getAuthenticationToken();
-        this.socket = new WebSocket(token.url);
+        this.socket = new WebSocket__default['default'](token.url);
         this.extendSocket();
         return this.socket;
     }
@@ -255,4 +264,4 @@ class AzureConnector extends Connector {
     }
 }
 
-export { AzureConnector };
+exports.AzureConnector = AzureConnector;
