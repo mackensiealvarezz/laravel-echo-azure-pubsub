@@ -31,7 +31,7 @@ export class AzureConnector extends Connector {
     this.socket = new WebSocket('');
 
     this.extendSocket();
-
+    console.log('conntent');
     return this.socket;
   }
 
