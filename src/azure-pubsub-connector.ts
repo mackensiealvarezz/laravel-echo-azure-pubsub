@@ -1,5 +1,5 @@
 import Connector from 'laravel-echo';
-const { WebPubSubServiceClient } = require('@azure/web-pubsub');
+//const { WebPubSubServiceClient } = require('@azure/web-pubsub');
 import { AzureChannel } from './channel/azure-channel';
 
 export class AzureConnector extends Connector {
@@ -20,11 +20,11 @@ export class AzureConnector extends Connector {
    * Create a fresh connection.
    */
   connect(): WebSocket {
-    const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
-    const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
-    const token = serviceClient.getAuthenticationToken();
-    console.log(token.url);
-    this.socket = new WebSocket(token.url);
+    // const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
+    // const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
+    // const token = serviceClient.getAuthenticationToken();
+    console.log('testing');
+    this.socket = new WebSocket('wss://asd');
     this.extendSocket();
     return this.socket;
   }
