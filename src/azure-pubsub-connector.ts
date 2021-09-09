@@ -20,14 +20,13 @@ export class AzureConnector extends Connector {
    * Create a fresh connection.
    */
   connect(): WebSocket {
-    // const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
-    // const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
-    // const token = serviceClient.getAuthenticationToken();
-
+    const connectionString = `Endpoint=${this.options.host};AccessKey=${this.options.key};Version=1.0;`;
+    const serviceClient = new WebPubSubServiceClient(connectionString, 'Hub');
+    const token = serviceClient.getAuthenticationToken();
+    console.log(token.url);
     this.socket = new WebSocket('');
 
     this.extendSocket();
-    console.log('conntent');
     return this.socket;
   }
 
