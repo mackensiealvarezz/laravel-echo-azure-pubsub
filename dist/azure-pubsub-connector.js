@@ -1769,8 +1769,7 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
-        this.fetchToken()
-            .then((data) => {
+        this.fetchToken().then((data) => {
             this.socket = new WebSocket(data['url']);
             this.extendSocket();
         });
@@ -1780,7 +1779,9 @@ class AzureConnector extends Echo {
         return __awaiter(this, void 0, void 0, function* () {
             return fetch(`/negotiate`)
                 .then((response) => response.json())
-                .then((json) => { return json; });
+                .then((json) => {
+                return json;
+            });
         });
     }
     /**
@@ -1793,25 +1794,68 @@ class AzureConnector extends Echo {
         this.socket.queue = [];
         this.socket.id = this.generateId();
         // Extend the socket with an emit function (mimic SocketIO API)
-        // this.socket.emit = (event: string, message: object) => {
-        //     return this.emit(event, message);
-        // };
-        // // Add main event handlers
-        // this.socket.addEventListener('open', () => {
-        //     this.open();
-        // });
-        // this.socket.addEventListener('message', (message) => {
-        //     this.receive(message);
-        // });
+        this.socket.emit = (event, message) => {
+            return this.emit(event, message);
+        };
+        // Add main event handlers
+        this.socket.addEventListener('open', () => {
+            this.open();
+        });
+        this.socket.addEventListener('message', (message) => {
+            this.receive(message);
+        });
+    }
+    emit(event, message) {
+        // Stringify the event
+        var packet = JSON.stringify({ event: event, message: message });
+        // Queue the packet if the connection isn't ready
+        if (this.socket.readyState !== this.socket.OPEN) {
+            this.socket.queue.push(packet);
+            return;
+        }
+        // Otherwise send immediately
+        this.socket.send(packet);
+    }
+    open() {
+        // Send any queued events
+        var socket = this.socket;
+        socket.queue.forEach(function (packet) {
+            socket.send(packet);
+        });
+        // Reset the queue
+        this.socket.queue = [];
     }
     /**
-      * Listen for an event on a channel instance.
-      *
-      * @param  {string} name
-      * @param  {string} event
-      * @param  {Function} callback
-      * @return {AzureChannel}
-      */
+     * Handle a message received from the server.
+     *
+     * @param  {MessageEvent} event
+     * @return {void}
+     */
+    receive(message) {
+        // Pick apart the message to determine where it should go
+        var packet = JSON.parse(message.data);
+        if (packet.event && packet.channel && typeof packet.payload !== 'undefined') {
+            // Fire the callbacks for the right event on the appropriate channel
+            var events = this.channel(packet.channel).events[packet.event];
+            if (typeof events !== 'undefined') {
+                events.forEach(function (callback) {
+                    callback(packet.channel, packet.payload);
+                });
+            }
+        }
+        else {
+            // Looks like a poorly formatted message
+            throw 'Invalid message received via socket.';
+        }
+    }
+    /**
+     * Listen for an event on a channel instance.
+     *
+     * @param  {string} name
+     * @param  {string} event
+     * @param  {Function} callback
+     * @return {AzureChannel}
+     */
     listen(name, event, callback) {
         return this.channel(name).listen(event, callback);
     }

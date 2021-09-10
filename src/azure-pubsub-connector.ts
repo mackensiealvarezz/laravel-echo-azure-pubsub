@@ -18,19 +18,20 @@ export class AzureConnector extends Connector {
   /**
    * Create a fresh connection.
    */
-    connect(): WebSocket {
-        this.fetchToken()
-            .then((data) => {
-                this.socket = new WebSocket(data['url']);
-                this.extendSocket();
-            });
-        return this.socket;
+  connect(): WebSocket {
+    this.fetchToken().then((data) => {
+      this.socket = new WebSocket(data['url']);
+      this.extendSocket();
+    });
+    return this.socket;
   }
 
-   async fetchToken(){
-       return fetch(`/negotiate`)
-       .then((response) => response.json())
-       .then((json) => { return json});
+  async fetchToken() {
+    return fetch(`/negotiate`)
+      .then((response) => response.json())
+      .then((json) => {
+        return json;
+      });
   }
 
   /**
@@ -44,29 +45,80 @@ export class AzureConnector extends Connector {
     this.socket.id = this.generateId();
 
     // Extend the socket with an emit function (mimic SocketIO API)
-    // this.socket.emit = (event: string, message: object) => {
-    //     return this.emit(event, message);
-    // };
+    this.socket.emit = (event: string, message: object) => {
+      return this.emit(event, message);
+    };
 
-    // // Add main event handlers
-    // this.socket.addEventListener('open', () => {
-    //     this.open();
-    // });
+    // Add main event handlers
+    this.socket.addEventListener('open', () => {
+      this.open();
+    });
 
-    // this.socket.addEventListener('message', (message) => {
-    //     this.receive(message);
-    // });
+    this.socket.addEventListener('message', (message) => {
+      this.receive(message);
+    });
   }
 
-   /**
-     * Listen for an event on a channel instance.
-     *
-     * @param  {string} name
-     * @param  {string} event
-     * @param  {Function} callback
-     * @return {AzureChannel}
-     */
-   listen(name: string, event: string, callback: Function): AzureChannel {
+  emit(event: string, message: object): void {
+    // Stringify the event
+    var packet = JSON.stringify({ event: event, message: message });
+
+    // Queue the packet if the connection isn't ready
+    if (this.socket.readyState !== this.socket.OPEN) {
+      this.socket.queue.push(packet);
+      return;
+    }
+
+    // Otherwise send immediately
+    this.socket.send(packet);
+  }
+
+  open(): void {
+    // Send any queued events
+    var socket = this.socket;
+
+    socket.queue.forEach(function (packet) {
+      socket.send(packet);
+    });
+
+    // Reset the queue
+    this.socket.queue = [];
+  }
+
+  /**
+   * Handle a message received from the server.
+   *
+   * @param  {MessageEvent} event
+   * @return {void}
+   */
+  receive(message: MessageEvent): void {
+    // Pick apart the message to determine where it should go
+    var packet = JSON.parse(message.data);
+
+    if (packet.event && packet.channel && typeof packet.payload !== 'undefined') {
+      // Fire the callbacks for the right event on the appropriate channel
+      var events = this.channel(packet.channel).events[packet.event];
+
+      if (typeof events !== 'undefined') {
+        events.forEach(function (callback) {
+          callback(packet.channel, packet.payload);
+        });
+      }
+    } else {
+      // Looks like a poorly formatted message
+      throw 'Invalid message received via socket.';
+    }
+  }
+
+  /**
+   * Listen for an event on a channel instance.
+   *
+   * @param  {string} name
+   * @param  {string} event
+   * @param  {Function} callback
+   * @return {AzureChannel}
+   */
+  listen(name: string, event: string, callback: Function): AzureChannel {
     return this.channel(name).listen(event, callback);
   }
 
@@ -75,7 +127,7 @@ export class AzureConnector extends Connector {
    */
   channel(channel: string): AzureChannel {
     if (!this.channels[channel]) {
-        this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
+      this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
     }
 
     return this.channels[channel];
@@ -105,7 +157,7 @@ export class AzureConnector extends Connector {
   /**
    * Leave the given channel.
    */
-  leaveChannel(name:any ) {
+  leaveChannel(name: any) {
     console.log('leaveChannel');
   }
 

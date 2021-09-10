@@ -23,7 +23,7 @@ export class AzureChannel extends Channel {
   /**
    * The event formatter.
    */
-  eventFormatter:  EventFormatter;
+  eventFormatter: EventFormatter;
 
   /**
    * The event callbacks applied to the socket.
