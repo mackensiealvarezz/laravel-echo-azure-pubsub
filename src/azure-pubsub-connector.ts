@@ -22,8 +22,8 @@ export class AzureConnector extends Connector {
         this.fetchToken()
             .then((data) => {
                 this.socket = new WebSocket(data['url']);
+                this.extendSocket();
             });
-        this.extendSocket();
         return this.socket;
   }
 
