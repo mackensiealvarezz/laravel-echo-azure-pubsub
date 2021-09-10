@@ -40,7 +40,7 @@ export class AzureChannel extends Channel {
    */
   constructor(socket: any, name: string, options: any) {
     super();
-
+    console.log('channel being initialize');
     this.name = name;
     this.socket = socket;
     this.options = options;

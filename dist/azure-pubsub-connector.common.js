@@ -1666,6 +1666,7 @@ class AzureChannel extends Channel {
          * User supplied callbacks for events on this channel.
          */
         this.listeners = {};
+        console.log('channel being initialize');
         this.name = name;
         this.socket = socket;
         this.options = options;
@@ -1775,17 +1776,10 @@ class AzureConnector extends Echo {
      */
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('connect function');
             let data = yield this.fetchToken();
-            console.log(data);
             this.socket = new WebSocket(data['url']);
             this.socket.onopen = () => console.log('connected');
-            // this.fetchToken().then((data) => {
-            //   this.socket = new WebSocket(data['url']);
-            //
-            //  this.socket.onopen = () => console.log('connected');
-            //   this.extendSocket();
-            // });
+            this.extendSocket();
             return this.socket;
         });
     }
