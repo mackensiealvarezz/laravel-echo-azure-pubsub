@@ -1746,6 +1746,7 @@ class AzureConnector extends Echo {
     connect() {
         console.log('testing');
         let data = this.fetchToken();
+        console.log(data);
         this.socket = new WebSocket(data['url']);
         this.extendSocket();
         return this.socket;
