@@ -1769,11 +1769,10 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
-        console.log('testing');
-        let data = this.fetchToken()
-            .then((res) => console.log(res));
-        console.log(data);
-        this.socket = new WebSocket(data['url']);
+        this.fetchToken()
+            .then((data) => {
+            this.socket = new WebSocket(data['url']);
+        });
         this.extendSocket();
         return this.socket;
     }
