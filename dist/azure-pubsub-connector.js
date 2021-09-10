@@ -1680,6 +1680,7 @@ class AzureChannel extends Channel {
      * Subscribe to a Socket.io channel.
      */
     subscribe() {
+        console.log('subscript to channel');
         this.socket.emit('subscribe', {
             channel: this.name,
             auth: this.options.auth || {},
@@ -1769,6 +1770,7 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
+        console.log('connect function');
         this.fetchToken().then((data) => {
             this.socket = new WebSocket(data['url']);
             this.socket.onopen = () => console.log('connected');

@@ -64,6 +64,7 @@ export class AzureChannel extends Channel {
    * Subscribe to a Socket.io channel.
    */
   subscribe(): void {
+      console.log('subscript to channel');
     this.socket.emit('subscribe', {
       channel: this.name,
       auth: this.options.auth || {},
