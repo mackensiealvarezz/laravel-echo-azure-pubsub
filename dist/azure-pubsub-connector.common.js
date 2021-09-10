@@ -1774,13 +1774,18 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
-        console.log('connect function');
-        this.fetchToken().then((data) => {
-            this.socket = new WebSocket(data['url']);
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('connect function');
+            this.socket = new WebSocket(yield this.fetchToken()['url']);
             this.socket.onopen = () => console.log('connected');
-            this.extendSocket();
+            // this.fetchToken().then((data) => {
+            //   this.socket = new WebSocket(data['url']);
+            //
+            //  this.socket.onopen = () => console.log('connected');
+            //   this.extendSocket();
+            // });
+            return this.socket;
         });
-        return this.socket;
     }
     fetchToken() {
         return __awaiter(this, void 0, void 0, function* () {

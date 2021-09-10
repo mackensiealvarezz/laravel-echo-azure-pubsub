@@ -14,7 +14,7 @@ export declare class AzureConnector extends Connector {
     /**
      * Create a fresh connection.
      */
-    connect(): WebSocket;
+    connect(): Promise<any>;
     fetchToken(): Promise<any>;
     /**
      * Attach event handlers to the socket.
