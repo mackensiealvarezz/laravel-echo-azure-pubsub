@@ -1789,11 +1789,8 @@ class AzureConnector extends Echo {
     }
     fetchToken() {
         return __awaiter(this, void 0, void 0, function* () {
-            return fetch(`/negotiate`)
-                .then((response) => response.json())
-                .then((json) => {
-                return json;
-            });
+            let res = yield fetch(`/negotiate`);
+            return yield res.json();
         });
     }
     /**
