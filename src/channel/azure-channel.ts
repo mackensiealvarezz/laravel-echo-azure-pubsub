@@ -1,5 +1,6 @@
 import { Channel } from './channel';
 import { EventFormatter } from '../util/event-formatter';
+import { AzureConnector } from '../azure-pubsub-connector';
 
 /**
  * This class represents a Ratchet channel.
@@ -40,7 +41,6 @@ export class AzureChannel extends Channel {
    */
   constructor(socket: any, name: string, options: any) {
     super();
-    console.log('channel being initialize');
     this.name = name;
     this.socket = socket;
     this.options = options;

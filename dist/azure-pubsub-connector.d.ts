@@ -14,7 +14,7 @@ export declare class AzureConnector extends Connector {
     /**
      * Create a fresh connection.
      */
-    connect(): Promise<any>;
+    connect(): Promise<WebSocket>;
     fetchToken(): Promise<any>;
     /**
      * Attach event handlers to the socket.
@@ -44,6 +44,7 @@ export declare class AzureConnector extends Connector {
      * Get a channel instance by name.
      */
     channel(channel: string): AzureChannel;
+    checkChannel(channel: string): AzureChannel;
     /**
      * Get a private channel instance by name.
      */

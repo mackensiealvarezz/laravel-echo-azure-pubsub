@@ -18,12 +18,18 @@ export class AzureConnector extends Connector {
   /**
    * Create a fresh connection.
    */
-  async connect() {
-      let data = await this.fetchToken();
-      this.socket = new WebSocket(data['url']);
-      this.socket.onopen = () => console.log('connected');
-      this.extendSocket();
-    return this.socket;
+    connect(): Promise<WebSocket> {
+        return fetch(`/negotiate`).then((res) => res.json())
+        .then((data) => {
+            this.socket = new WebSocket(data['url']);
+            this.socket.onopen = () => console.log('connected');
+            this.extendSocket();
+            return this.socket;
+        });
+    //   let data = await this.fetchToken();
+    //   this.socket = new WebSocket(data['url']);
+    //   this.socket.onopen = () => console.log('connected');
+    //   this.extendSocket();
   }
 
   async fetchToken() {
@@ -123,11 +129,26 @@ export class AzureConnector extends Connector {
    * Get a channel instance by name.
    */
   channel(channel: string): AzureChannel {
-    if (!this.channels[channel]) {
-      this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
+
+    if(this.socket == null){
+        console.log('null channel');
+        this.connect().then(() => {
+            return this.checkChannel(channel);
+        });
+    } else {
+        return this.checkChannel(channel);
     }
 
-    return this.channels[channel];
+
+  }
+
+  checkChannel(channel: string): AzureChannel{
+
+     if(!this.channels[channel]) {
+            this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
+        }
+
+      return this.channels[channel];
   }
 
   /**
