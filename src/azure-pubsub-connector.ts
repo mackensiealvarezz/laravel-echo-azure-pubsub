@@ -20,7 +20,9 @@ export class AzureConnector extends Connector {
    */
   async connect() {
       console.log('connect function');
-      this.socket = new WebSocket(await this.fetchToken()['url']);
+      let data = await this.fetchToken();
+      console.log(data);
+      this.socket = new WebSocket(data['url']);
       this.socket.onopen = () => console.log('connected');
     // this.fetchToken().then((data) => {
     //   this.socket = new WebSocket(data['url']);
