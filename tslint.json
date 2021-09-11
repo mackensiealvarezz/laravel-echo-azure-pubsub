@@ -1,0 +1,4 @@
+{
+    "no-var-requires ": true,
+    "extends": ["tslint:recommended", "tslint-config-prettier"]
+}
