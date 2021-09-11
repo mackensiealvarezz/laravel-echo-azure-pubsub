@@ -10,31 +10,20 @@ export class AzureConnector extends Connector {
 
   socket: any;
 
+  events: {[event: string]: Function } = {};
+
   /**
    * All of the subscribed channel names.
    */
-  channels: any = {};
+  channels: {[name: string]: AzureChannel } = {};
 
   /**
    * Create a fresh connection.
    */
-    connect(): Promise<WebSocket> {
-        return fetch(`/negotiate`).then((res) => res.json())
-        .then((data) => {
-            this.socket = new WebSocket(data['url']);
-            this.socket.onopen = () => console.log('connected');
-            this.extendSocket();
-            return this.socket;
-        });
-    //   let data = await this.fetchToken();
-    //   this.socket = new WebSocket(data['url']);
-    //   this.socket.onopen = () => console.log('connected');
-    //   this.extendSocket();
-  }
-
-  async fetchToken() {
-    let res = await fetch(`/negotiate`);
-    return await res.json();
+    connect(): WebSocket {
+       this.socket = new WebSocket(this.options['key']);
+       this.extendSocket();
+       return this.socket;
   }
 
   /**
@@ -53,13 +42,18 @@ export class AzureConnector extends Connector {
     };
 
     // Add main event handlers
-    this.socket.addEventListener('open', () => {
-      this.open();
-    });
+    this.socket.onopen = this.open();
 
-    this.socket.addEventListener('message', (message) => {
-      this.receive(message);
-    });
+    this.socket.onmessage = (event) => {
+        console.debug("WebSocket message received:", event);
+        this.receive(event);
+    };
+
+    this.socket.on = (event, func)  => {
+        this.on(event, func);
+    }
+
+
   }
 
   emit(event: string, message: object): void {
@@ -77,6 +71,7 @@ export class AzureConnector extends Connector {
   }
 
   open(): void {
+     console.log('connection is open');
     // Send any queued events
     var socket = this.socket;
 
@@ -96,16 +91,20 @@ export class AzureConnector extends Connector {
    */
   receive(message: MessageEvent): void {
     // Pick apart the message to determine where it should go
-    var packet = JSON.parse(message.data);
+    let packet = JSON.parse(message.data);
+    let channel = packet.channel;
+    let event = packet.event;
 
-    if (packet.event && packet.channel && typeof packet.payload !== 'undefined') {
+    if (event && channel) {
+      let findChannel = this.channel(channel);
+      //We want to format the event
+      let formatEvent = findChannel.eventFormatter.format(event);
       // Fire the callbacks for the right event on the appropriate channel
-      var events = this.channel(packet.channel).events[packet.event];
-
-      if (typeof events !== 'undefined') {
-        events.forEach(function (callback) {
-          callback(packet.channel, packet.payload);
-        });
+      let eventCallback = findChannel.events[formatEvent];
+      //check if its a null
+      if (typeof eventCallback !== 'undefined') {
+        //run it and pass it the data
+        eventCallback(channel, packet);
       }
     } else {
       // Looks like a poorly formatted message
@@ -130,26 +129,22 @@ export class AzureConnector extends Connector {
    */
   channel(channel: string): AzureChannel {
 
-    if(this.socket == null){
-        console.log('null channel');
-        this.connect().then(() => {
-            return this.checkChannel(channel);
-        });
-    } else {
-        return this.checkChannel(channel);
+    if(!this.channels[channel]) {
+        this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
+    }
+    return this.channels[channel];
+  }
+
+    /**
+   * Store the event inside of events, this way on reciever we can check all events
+   */
+
+    on(event: string, callback: Function){
+       // console.log('do something with on:', event, callback);
+        this.events[event] = callback;
     }
 
 
-  }
-
-  checkChannel(channel: string): AzureChannel{
-
-     if(!this.channels[channel]) {
-            this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
-        }
-
-      return this.channels[channel];
-  }
 
   /**
    * Get a private channel instance by name.

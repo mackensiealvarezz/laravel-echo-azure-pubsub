@@ -7,15 +7,19 @@ export declare class AzureConnector extends Connector {
      * @type {object}
      */
     socket: any;
+    events: {
+        [event: string]: Function;
+    };
     /**
      * All of the subscribed channel names.
      */
-    channels: any;
+    channels: {
+        [name: string]: AzureChannel;
+    };
     /**
      * Create a fresh connection.
      */
-    connect(): Promise<WebSocket>;
-    fetchToken(): Promise<any>;
+    connect(): WebSocket;
     /**
      * Attach event handlers to the socket.
      *
@@ -44,7 +48,10 @@ export declare class AzureConnector extends Connector {
      * Get a channel instance by name.
      */
     channel(channel: string): AzureChannel;
-    checkChannel(channel: string): AzureChannel;
+    /**
+   * Store the event inside of events, this way on reciever we can check all events
+   */
+    on(event: string, callback: Function): void;
     /**
      * Get a private channel instance by name.
      */

@@ -1,28 +1,3 @@
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -1662,6 +1637,7 @@ class AzureChannel extends Channel {
          * User supplied callbacks for events on this channel.
          */
         this.listeners = {};
+        console.log('on the channel', name, options);
         this.name = name;
         this.socket = socket;
         this.options = options;
@@ -1669,6 +1645,7 @@ class AzureChannel extends Channel {
         this.subscribe();
     }
     listen(event, callback) {
+        console.log('event to listen', event);
         this.on(this.eventFormatter.format(event), callback);
         return this;
     }
@@ -1680,7 +1657,7 @@ class AzureChannel extends Channel {
      * Subscribe to a Socket.io channel.
      */
     subscribe() {
-        console.log('subscript to channel');
+        console.log('subscribe to channel');
         this.socket.emit('subscribe', {
             channel: this.name,
             auth: this.options.auth || {},
@@ -1761,6 +1738,7 @@ class AzureConnector extends Echo {
          * @type {object}
          */
         super(...arguments);
+        this.events = {};
         /**
          * All of the subscribed channel names.
          */
@@ -1770,23 +1748,9 @@ class AzureConnector extends Echo {
      * Create a fresh connection.
      */
     connect() {
-        return fetch(`/negotiate`).then((res) => res.json())
-            .then((data) => {
-            this.socket = new WebSocket(data['url']);
-            this.socket.onopen = () => console.log('connected');
-            this.extendSocket();
-            return this.socket;
-        });
-        //   let data = await this.fetchToken();
-        //   this.socket = new WebSocket(data['url']);
-        //   this.socket.onopen = () => console.log('connected');
-        //   this.extendSocket();
-    }
-    fetchToken() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let res = yield fetch(`/negotiate`);
-            return yield res.json();
-        });
+        this.socket = new WebSocket(this.options['key']);
+        this.extendSocket();
+        return this.socket;
     }
     /**
      * Attach event handlers to the socket.
@@ -1802,12 +1766,14 @@ class AzureConnector extends Echo {
             return this.emit(event, message);
         };
         // Add main event handlers
-        this.socket.addEventListener('open', () => {
-            this.open();
-        });
-        this.socket.addEventListener('message', (message) => {
-            this.receive(message);
-        });
+        this.socket.onopen = this.open();
+        this.socket.onmessage = (event) => {
+            console.debug("WebSocket message received:", event);
+            this.receive(event);
+        };
+        this.socket.on = (event, func) => {
+            this.on(event, func);
+        };
     }
     emit(event, message) {
         // Stringify the event
@@ -1821,6 +1787,7 @@ class AzureConnector extends Echo {
         this.socket.send(packet);
     }
     open() {
+        console.log('connection is open');
         // Send any queued events
         var socket = this.socket;
         socket.queue.forEach(function (packet) {
@@ -1837,14 +1804,19 @@ class AzureConnector extends Echo {
      */
     receive(message) {
         // Pick apart the message to determine where it should go
-        var packet = JSON.parse(message.data);
-        if (packet.event && packet.channel && typeof packet.payload !== 'undefined') {
+        let packet = JSON.parse(message.data);
+        let channel = packet.channel;
+        let event = packet.event;
+        if (event && channel) {
+            let findChannel = this.channel(channel);
+            //We want to format the event
+            let formatEvent = findChannel.eventFormatter.format(event);
             // Fire the callbacks for the right event on the appropriate channel
-            var events = this.channel(packet.channel).events[packet.event];
-            if (typeof events !== 'undefined') {
-                events.forEach(function (callback) {
-                    callback(packet.channel, packet.payload);
-                });
+            let eventCallback = findChannel.events[formatEvent];
+            //check if its a null
+            if (typeof eventCallback !== 'undefined') {
+                //run it and pass it the data
+                eventCallback(channel, packet);
             }
         }
         else {
@@ -1867,21 +1839,17 @@ class AzureConnector extends Echo {
      * Get a channel instance by name.
      */
     channel(channel) {
-        if (this.socket == null) {
-            console.log('null channel');
-            this.connect().then(() => {
-                return this.checkChannel(channel);
-            });
-        }
-        else {
-            return this.checkChannel(channel);
-        }
-    }
-    checkChannel(channel) {
         if (!this.channels[channel]) {
             this.channels[channel] = new AzureChannel(this.socket, channel, this.options);
         }
         return this.channels[channel];
+    }
+    /**
+   * Store the event inside of events, this way on reciever we can check all events
+   */
+    on(event, callback) {
+        // console.log('do something with on:', event, callback);
+        this.events[event] = callback;
     }
     /**
      * Get a private channel instance by name.

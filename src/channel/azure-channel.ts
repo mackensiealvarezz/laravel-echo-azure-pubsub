@@ -41,6 +41,7 @@ export class AzureChannel extends Channel {
    */
   constructor(socket: any, name: string, options: any) {
     super();
+    console.log('on the channel', name, options);
     this.name = name;
     this.socket = socket;
     this.options = options;
@@ -49,8 +50,8 @@ export class AzureChannel extends Channel {
   }
 
   listen(event: string, callback: Function): AzureChannel {
+    console.log('event to listen', event);
     this.on(this.eventFormatter.format(event), callback);
-
     return this;
   }
 
@@ -64,7 +65,7 @@ export class AzureChannel extends Channel {
    * Subscribe to a Socket.io channel.
    */
   subscribe(): void {
-      console.log('subscript to channel');
+      console.log('subscribe to channel');
     this.socket.emit('subscribe', {
       channel: this.name,
       auth: this.options.auth || {},
@@ -113,7 +114,6 @@ export class AzureChannel extends Channel {
           this.listeners[event].forEach((cb: any) => cb(data));
         }
       };
-
       this.socket.on(event, this.events[event]);
     }
 
